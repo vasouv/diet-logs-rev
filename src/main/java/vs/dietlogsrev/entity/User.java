@@ -32,6 +32,10 @@ public class User {
     @NotBlank
     @Size(min = 8, max = 24, message = "Password length between 8 and 24 characters")
     private String password;
+    
+    public User() {
+        
+    }
 
     public User(String email, String username, String password) {
         this.email = email;
