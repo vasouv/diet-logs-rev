@@ -26,7 +26,7 @@ public class UserService {
     public User save(@Valid CreateUserRequest createUserRequest) {
         
         if (repository.existsByEmail(createUserRequest.email())) {
-            log.warn("User with email: " + createUserRequest.email() + " already exists");
+            log.warn("User with email: {} already exists", createUserRequest.email());
             throw new EntityExistsException(ErrorMessage.EMAIL_EXISTS);
         }
         

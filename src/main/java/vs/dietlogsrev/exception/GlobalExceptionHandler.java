@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,7 +28,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         // Get all errors
         var errorList = ex.getBindingResult().getFieldErrors().stream()
-                .map(x -> x.getDefaultMessage()).collect(Collectors.toList());
+                .map(FieldError::getDefaultMessage).collect(Collectors.toList());
 
         return ResponseEntity.status(status).body(new ErrorResponse(status.value(), errorList));
 
@@ -38,7 +39,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException ex,
             WebRequest request) {
 
-        List<String> errors = new ArrayList<String>();
+        List<String> errors = new ArrayList<>();
         for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
             errors.add(violation.getPropertyPath() + ": " + violation.getMessage());
         }
@@ -68,10 +69,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private class ErrorResponse {
-        public int status;
-        public List<String> errors;
+        private final int status;
+        private final List<String> errors;
 
-        public ErrorResponse(int status, List<String> errors) {
+        private ErrorResponse(int status, List<String> errors) {
             this.status = status;
             this.errors = errors;
         }
