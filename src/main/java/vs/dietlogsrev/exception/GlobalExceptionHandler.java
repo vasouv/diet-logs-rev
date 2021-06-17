@@ -10,7 +10,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,7 +27,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         // Get all errors
         var errorList = ex.getBindingResult().getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage).collect(Collectors.toList());
+                .map(x -> x.getDefaultMessage()).collect(Collectors.toList());
 
         return ResponseEntity.status(status).body(new ErrorResponse(status.value(), errorList));
 
@@ -44,35 +43,42 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             errors.add(violation.getPropertyPath() + ": " + violation.getMessage());
         }
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errors));
+        return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errors));
     }
-    
+
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<ErrorResponse> handleEntityExists(EntityExistsException ex, WebRequest request) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), List.of(ex.getMessage())));
+        return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), List.of(ex.getMessage())));
     }
-    
-    
+
+
     // for the unique parameter in jpa entity
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex,
-            WebRequest request) {
-        
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), List.of(ErrorMessage.EMAIL_EXISTS)));
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex, WebRequest request) {
+
+        return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(),List.of(ErrorMessage.EMAIL_EXISTS)));
     }
-    
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), List.of(ErrorMessage.USER_NOT_FOUND)));
     }
 
-    private class ErrorResponse {
-        private final int status;
-        private final List<String> errors;
+    @ExceptionHandler(MeasurementDateInFutureException.class)
+    public ResponseEntity<ErrorResponse> handleMeasurementDateInFutureException(MeasurementDateInFutureException ex, WebRequest request) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(),List.of(ErrorMessage.MEASUREMENT_DATE_IN_FUTURE)));
+    }
+    
+    @ExceptionHandler(MeasurementWeightNegativeOrZero.class)
+    public ResponseEntity<ErrorResponse> handleMeasurementWeightNegativeOrZeroException(MeasurementWeightNegativeOrZero ex, WebRequest request) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), List.of(ErrorMessage.MEASUREMENT_WEIGHT_NEGATIVE_OR_ZERO)));
+    }
 
-        private ErrorResponse(int status, List<String> errors) {
+    private class ErrorResponse {
+        public final int status;
+        public final List<String> errors;
+
+        public ErrorResponse(int status, List<String> errors) {
             this.status = status;
             this.errors = errors;
         }
