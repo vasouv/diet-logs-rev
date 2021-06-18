@@ -1,4 +1,4 @@
 package vs.dietlogsrev.exception;
 
-public class MeasurementDateInFutureException extends RuntimeException {
+public class MeasurementDateInFutureException extends IllegalArgumentException {
 }

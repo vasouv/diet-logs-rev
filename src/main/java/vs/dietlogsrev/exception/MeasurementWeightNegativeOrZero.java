@@ -1,5 +1,5 @@
 package vs.dietlogsrev.exception;
 
-public class MeasurementWeightNegativeOrZero extends RuntimeException {
+public class MeasurementWeightNegativeOrZero extends IllegalArgumentException {
 
 }
