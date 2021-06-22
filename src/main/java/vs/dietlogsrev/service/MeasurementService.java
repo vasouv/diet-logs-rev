@@ -3,7 +3,6 @@ package vs.dietlogsrev.service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +59,7 @@ public class MeasurementService {
 
     public List<MeasurementResponse> findByUserId(int userId) {
         var user = userService.findById(userId);
-        return measurementRepository.findAllByUser(user).stream().map(m -> m.toMeasurementResponse()).collect(Collectors.toList());
+        return measurementRepository.findAllByUser(user).stream().map(Measurement::toMeasurementResponse).toList();
     }
 
 }
