@@ -1,6 +1,7 @@
 package vs.dietlogsrev.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,7 +11,7 @@ public class BMICalculator {
         if (height.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Height cannot be negative");
         }
-        return weight.divide(BigDecimal.valueOf(Math.pow(height.doubleValue(), 2)));
+        return weight.divide(height.pow(2), 1, RoundingMode.HALF_UP).setScale(1);
     }
 
 }
