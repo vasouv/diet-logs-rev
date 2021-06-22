@@ -49,18 +49,18 @@ public class MeasurementService {
         }
         
         // find user by id
-        var user = this.userService.findById(userId);
+        var user = userService.findById(userId);
         
         // create measurement and save
-        var measurement = new Measurement(request, this.bmiCalculator.calculate(request.weight(), this.HEIGHT));
+        var measurement = new Measurement(request, bmiCalculator.calculate(request.weight(), HEIGHT));
         measurement.setUser(user);
-        this.measurementRepository.save(measurement);
+        measurementRepository.save(measurement);
         
     }
 
     public List<MeasurementResponse> findByUserId(int userId) {
-        var user = this.userService.findById(userId);
-        return this.measurementRepository.findAllByUser(user).stream().map(m -> m.toMeasurementResponse()).collect(Collectors.toList());
+        var user = userService.findById(userId);
+        return measurementRepository.findAllByUser(user).stream().map(m -> m.toMeasurementResponse()).collect(Collectors.toList());
     }
 
 }

@@ -28,12 +28,12 @@ public class MeasurementsController {
     @PostMapping("{userId}")
     @ResponseStatus(HttpStatus.CREATED)
     public void add(@PathVariable("userId") int userId, @Valid @RequestBody CreateMeasurementRequest request) {
-        this.measurementService.add(userId, request);
+        measurementService.add(userId, request);
     }
 
     @GetMapping("{userId}")
     public ResponseEntity<List<MeasurementResponse>> findByUserId(@PathVariable("userId") int userId) {
-        return ResponseEntity.ok(this.measurementService.findByUserId(userId));
+        return ResponseEntity.ok(measurementService.findByUserId(userId));
     }
 
 }

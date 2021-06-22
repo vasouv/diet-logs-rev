@@ -27,19 +27,19 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> create(HttpServletRequest httpRequest, @Valid @RequestBody CreateUserRequest request) {
-        var savedUser = this.userService.save(request);
+        var savedUser = userService.save(request);
         var savedUserURI = UriComponentsBuilder.fromUriString(httpRequest.getServletPath()).path("/" + savedUser.getId()).build().toUri();
         return ResponseEntity.created(savedUserURI).build();
     }
     
     @GetMapping
     public ResponseEntity<List<User>> findAll() {
-        return ResponseEntity.ok(this.userService.findAll());
+        return ResponseEntity.ok(userService.findAll());
     }
     
     @GetMapping("{id}")
     public ResponseEntity<User> findById(@PathVariable int id) {
-        return ResponseEntity.ok(this.userService.findById(id));
+        return ResponseEntity.ok(userService.findById(id));
     }
 
 }

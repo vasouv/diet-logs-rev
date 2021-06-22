@@ -34,11 +34,11 @@ public class UserService {
     }
 
     public List<User> findAll() {
-        return this.repository.findAll();
+        return repository.findAll();
     }
 
     public User findById(int id) {
-        return this.repository.findById(id).orElseThrow(UserNotFoundException::new);
+        return repository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
 }
