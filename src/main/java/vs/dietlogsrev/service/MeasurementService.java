@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 import vs.dietlogsrev.entity.Measurement;
 import vs.dietlogsrev.exception.ErrorMessage;
 import vs.dietlogsrev.exception.MeasurementDateInFutureException;
@@ -16,6 +17,7 @@ import vs.dietlogsrev.model.MeasurementResponse;
 import vs.dietlogsrev.repository.MeasurementRepository;
 
 @Service
+@RequiredArgsConstructor
 public class MeasurementService {
 
     private static final Logger log = LoggerFactory.getLogger(MeasurementService.class);
@@ -23,16 +25,8 @@ public class MeasurementService {
     private final MeasurementRepository measurementRepository;
     private final UserService userService;
     private final BMICalculator bmiCalculator;
+    private final UserInfoService infoService;
     
-    // TODO: retrieve from user info
-    private final BigDecimal HEIGHT = new BigDecimal("1.76");
-    
-    public MeasurementService(MeasurementRepository measurementRepository, UserService userService, BMICalculator bmiCalculator) {
-        this.userService = userService;
-        this.bmiCalculator = bmiCalculator;
-        this.measurementRepository = measurementRepository;
-    }
-
     public void add(int userId, @Valid CreateMeasurementRequest request) {
 
         // measurement date must be past or present
@@ -50,8 +44,11 @@ public class MeasurementService {
         // find user by id
         var user = userService.findById(userId);
         
+        // find user info
+        var userInfo = infoService.findByUserId(userId);
+        
         // create measurement and save
-        var measurement = new Measurement(request, bmiCalculator.calculate(request.weight(), HEIGHT));
+        var measurement = new Measurement(request, bmiCalculator.calculate(request.weight(), userInfo.getHeight()));
         measurement.setUser(user);
         measurementRepository.save(measurement);
         

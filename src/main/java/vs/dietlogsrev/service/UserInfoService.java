@@ -26,6 +26,10 @@ public class UserInfoService {
 
         infoRepository.save(userInfo);
     }
+    
+    public UserInfo findByUserId(int userId){
+        return infoRepository.findByUserId(userId);
+    }
 
     public UserFullInfo findFullInfo(int userId) {
 
