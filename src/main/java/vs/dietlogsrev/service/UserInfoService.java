@@ -15,7 +15,6 @@ public class UserInfoService {
 
     private final UserService userService;
     private final UserInfoRepository infoRepository;
-    private final MeasurementService measurementService;
 
     public void saveInfo(int userId, @Valid CreateUserInfoRequest request) {
 
@@ -39,12 +38,9 @@ public class UserInfoService {
         // find user info
         var userInfo = infoRepository.findByUserId(userId);
         
-        // find user measurements
-        var measurements = measurementService.findByUserId(userId);
-
         // construct final object
         return UserFullInfo.builder().email(user.getEmail()).username(user.getUsername())
-                .info(new UserNeededInfo(userInfo)).measurements(measurements).build();
+                .info(new UserNeededInfo(userInfo)).build();
     }
 
 }
