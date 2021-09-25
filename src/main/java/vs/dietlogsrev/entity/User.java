@@ -50,9 +50,7 @@ public class User {
     }
     
     public User(CreateUserRequest request) {
-        this.email = request.email();
-        this.username = request.username();
-        this.password = request.password();
+        this(request.email(), request.username(), request.password());
     }
 
 }
