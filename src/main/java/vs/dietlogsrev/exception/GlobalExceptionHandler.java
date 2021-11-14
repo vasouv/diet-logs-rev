@@ -74,6 +74,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), List.of(ErrorMessage.MEASUREMENT_WEIGHT_NEGATIVE_OR_ZERO)));
     }
 
+    @ExceptionHandler(AppointmentDateInFutureException.class)
+    public ResponseEntity<ErrorResponse> handleAppointmentDateInFutureException(AppointmentDateInFutureException ex, WebRequest request) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), List.of(ErrorMessage.APPOINTMENT_DATE_IN_FUTURE)));
+    }
+
     private class ErrorResponse {
         public final int status;
         public final List<String> errors;
