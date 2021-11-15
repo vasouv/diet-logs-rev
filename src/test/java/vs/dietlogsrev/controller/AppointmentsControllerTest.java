@@ -1,12 +1,14 @@
 package vs.dietlogsrev.controller;
 
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import vs.dietlogsrev.exception.AppointmentDateInFutureException;
 import vs.dietlogsrev.exception.UserNotFoundException;
 import vs.dietlogsrev.model.CreateAppointmentRequest;
 import vs.dietlogsrev.service.AppointmentService;
@@ -24,40 +27,70 @@ import vs.dietlogsrev.service.AppointmentService;
 @WebMvcTest(controllers = AppointmentsController.class)
 public class AppointmentsControllerTest {
 
-    @Autowired MockMvc mvc;
+    @Autowired 
+    MockMvc mvc;
 
-    @MockBean AppointmentService appointmentService;
+    @MockBean
+    AppointmentService appointmentService;
+
+    @Autowired
+    ObjectMapper mapper;
 
     @Test
-    @DisplayName("Create appointment - date in future")
-    public void createAppointment() {
-        fail("Not done yet");
+    @DisplayName("Create appointment")
+    public void createAppointment() throws JsonProcessingException, Exception {
+
+        var appointmentRequest = new CreateAppointmentRequest(LocalDate.now().plusDays(1), 1);
+
+        mvc.perform(post("/appointments/{id}", 1)
+                .content(mapper.writeValueAsString(appointmentRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated());
+
     }
 
     @Test
     @DisplayName("Create appointment - date in past - throws exception")
-    public void createAppointmentDateInPastException() {
-        fail("Not done yet");
+    public void createAppointmentDateInPastException() throws JsonProcessingException, Exception {
+
+        var appointmentRequest = new CreateAppointmentRequest(LocalDate.now().minusDays(1), 1);
+
+        doThrow(new AppointmentDateInFutureException()).when(appointmentService).add(1, appointmentRequest);
+
+        mvc.perform(post("/appointments/{userId}", 1)
+                .content(mapper.writeValueAsString(appointmentRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+            .andExpect(jsonPath("$.errors").isNotEmpty());
+
     }
 
     @Test
     @DisplayName("Create appointment - date is null - throws exception")
-    public void createAppointmentDateIsNull() {
-        fail("Not done yet");
-    }
+    public void createAppointmentDateIsNull() throws JsonProcessingException, Exception {
+        var appointmentRequest = new CreateAppointmentRequest(null, 1);
 
-    @Test
-    @DisplayName("Create appointment - date is empty - throws exception")
-    public void createAppointmentDateIsEmpty() {
-        fail("Not done yet");
+        doThrow(new AppointmentDateInFutureException()).when(appointmentService).add(1, appointmentRequest);
+
+        mvc.perform(post("/appointments/{userId}", 1)
+                .content(mapper.writeValueAsString(appointmentRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+            .andExpect(jsonPath("$.errors").isNotEmpty());
     }
 
     @Test
     @DisplayName("Create appointment - user not found")
     public void createAppointmentUserNotFound() throws Exception {
-        doThrow(new UserNotFoundException()).when(appointmentService).add(anyInt(), new CreateAppointmentRequest(null, null));
+        CreateAppointmentRequest appointmentRequest = new CreateAppointmentRequest(LocalDate.now(), 1);
 
-        mvc.perform(post("/appointments/{userId}", anyInt()).contentType(MediaType.APPLICATION_JSON))
+        doThrow(new UserNotFoundException()).when(appointmentService).add(1, appointmentRequest);
+
+        mvc.perform(post("/appointments/{userId}", 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(appointmentRequest)))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
             .andExpect(jsonPath("$.errors").isNotEmpty());
