@@ -1,6 +1,7 @@
 package vs.dietlogsrev.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -40,6 +41,11 @@ public class AppointmentService {
         appointment.setUser(user);
         appointmentRepository.save(appointment);
 
+    }
+
+    public List<Appointment> findByUserId(int userId) {
+        var user = userService.findById(userId);
+        return appointmentRepository.findAllByUser(user);
     }
 
 }

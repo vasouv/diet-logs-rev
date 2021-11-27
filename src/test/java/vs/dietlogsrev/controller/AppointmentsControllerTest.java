@@ -1,11 +1,15 @@
 package vs.dietlogsrev.controller;
 
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import vs.dietlogsrev.entity.Appointment;
 import vs.dietlogsrev.exception.AppointmentDateInFutureException;
 import vs.dietlogsrev.exception.UserNotFoundException;
 import vs.dietlogsrev.model.CreateAppointmentRequest;
@@ -94,6 +99,44 @@ public class AppointmentsControllerTest {
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
             .andExpect(jsonPath("$.errors").isNotEmpty());
+    }
+
+    @Test
+    @DisplayName("Find appointments by user id - user not found")
+    public void findByUserIdUserNotFound() throws Exception {
+        doThrow(new UserNotFoundException()).when(appointmentService).findByUserId(1);
+        
+        mvc.perform(get("/appointments/{userId}", 1)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
+            .andExpect(jsonPath("$.errors").isNotEmpty());
+    }
+
+    @Test
+    @DisplayName("Find appointments by user id - empty list")
+    public void findByUserIdEmptyCollection() throws Exception {
+        
+        when(appointmentService.findByUserId(1)).thenReturn(Collections.emptyList());
+        
+        mvc.perform(get("/appointments/{userId}", 1)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    @DisplayName("Find appointments by user id")
+    public void findByUserId() throws Exception {
+
+        var appointments = List.of(new Appointment(LocalDate.now()));
+        
+        when(appointmentService.findByUserId(1)).thenReturn(appointments);
+        
+        mvc.perform(get("/appointments/{userId}", 1)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").isNotEmpty());
     }
 
 }
