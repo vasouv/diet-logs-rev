@@ -4,6 +4,7 @@ import javax.validation.Valid;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import vs.dietlogsrev.entity.UserInfo;
+import vs.dietlogsrev.exception.UserInfoNotFoundException;
 import vs.dietlogsrev.model.CreateUserInfoRequest;
 import vs.dietlogsrev.model.UserFullInfo;
 import vs.dietlogsrev.model.UserNeededInfo;
@@ -27,7 +28,7 @@ public class UserInfoService {
     }
     
     public UserInfo findByUserId(int userId){
-        return infoRepository.findByUserId(userId);
+        return infoRepository.findByUserId(userId).orElseThrow(UserInfoNotFoundException::new);
     }
 
     public UserFullInfo findFullInfo(int userId) {
@@ -39,8 +40,12 @@ public class UserInfoService {
         var userInfo = infoRepository.findByUserId(userId);
         
         // construct final object
-        return UserFullInfo.builder().email(user.getEmail()).username(user.getUsername())
-                .info(new UserNeededInfo(userInfo)).build();
+        var infoBuilder = UserFullInfo.builder().email(user.getEmail()).username(user.getUsername());
+        if(userInfo.isPresent()) {
+            infoBuilder.info(new UserNeededInfo(userInfo.get()));
+        }
+        
+        return infoBuilder.build();
     }
 
 }

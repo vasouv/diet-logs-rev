@@ -51,7 +51,7 @@ public class User {
         this.username = username;
         this.password = password;
     }
-    
+
     public User(CreateUserRequest request) {
         this(request.email(), request.username(), request.password());
     }
