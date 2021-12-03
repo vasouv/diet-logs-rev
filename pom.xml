@@ -56,6 +56,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>diet-logs-rev</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
