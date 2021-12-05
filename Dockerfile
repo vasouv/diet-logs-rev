@@ -23,4 +23,4 @@ COPY wait-for-it.sh wait-for-it.sh
 RUN chmod +x wait-for-it.sh
 
 # run the artifact after it waits for the database container
-# ENTRYPOINT ["./wait-for-it.sh", "developers-mysql-container:3307", "--","java","-jar","diet-logs-rev.jar"]
+ENTRYPOINT ["./wait-for-it.sh", "diet-logs-rev-mariadb-container:3307", "--","java","-jar","diet-logs-rev.jar"]

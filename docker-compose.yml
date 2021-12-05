@@ -1,0 +1,36 @@
+version: '3.9'
+services:
+
+  mariadb:
+    build:
+      context: ./mariadb-docker
+      dockerfile: Dockerfile
+    container_name: diet-logs-rev-mariadb-container
+    image: diet-logs-rev-mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: diet-logs-rev
+    ports:
+      - 3307:3306
+    networks:
+      - diet-logs-rev-network
+
+  project:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: diet-logs-rev-container
+    image: diet-logs-rev-service
+    ports:
+      - 8080:8080
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/diet-logs-rev
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - mariadb
+    networks:
+      - diet-logs-rev-network
+
+networks:
+    diet-logs-rev-network: 
