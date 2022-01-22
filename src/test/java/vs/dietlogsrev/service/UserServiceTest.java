@@ -1,70 +1,65 @@
 package vs.dietlogsrev.service;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.EntityExistsException;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import vs.dietlogsrev.entity.User;
 import vs.dietlogsrev.exception.UserNotFoundException;
 import vs.dietlogsrev.model.CreateUserRequest;
 import vs.dietlogsrev.repository.UserRepository;
 
-@ExtendWith(MockitoExtension.class)
+import javax.persistence.EntityExistsException;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyInt;
+
+@SpringBootTest
 public class UserServiceTest {
 
-    @Mock
+    @Autowired
     UserRepository userRepository;
 
-    @InjectMocks
+    @Autowired
     UserService userService;
+
+    @BeforeEach
+    void init() {
+        userRepository.deleteAll();
+    }
+
+    @AfterEach
+    void cleanup() {
+        userRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("Find all users - empty list")
     void findAllUsersEmptyList() {
-
-        when(userRepository.findAll()).thenReturn(Collections.emptyList());
-
         assertThat(userService.findAll()).isEmpty();
-
     }
 
     @Test
     @DisplayName("Find all users")
     void findAllUsers() {
-        var users = List.of(new User("email", "username","password"));
-        when(userRepository.findAll()).thenReturn(users);
+        initDatabase();
+
         assertThat(userService.findAll()).isNotEmpty();
     }
 
     @Test
     @DisplayName("Find user by id - user not found")
     void findUserByIdThrowsUserNotFound() {
-        doThrow(new UserNotFoundException()).when(userRepository).findById(anyInt());
         assertThrows(UserNotFoundException.class, () -> userService.findById(anyInt()));
     }
 
+    @Disabled
     @Test
     @DisplayName("Find user by id")
     void findUserById() {
-        var user = new User(1, "email", "username", "password");
-        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        initDatabase();
 
         var foundUser = userService.findById(1);
         assertThat(foundUser).isNotNull();
@@ -74,19 +69,25 @@ public class UserServiceTest {
     @Test
     @DisplayName("Save new user - user exists")
     void saveNewUserThrowsUserExistsException() {
-        var request = new CreateUserRequest("email", "username", "password");
-        when(userRepository.existsByEmail(request.email())).thenThrow(new EntityExistsException());
+        initDatabase();
+
+        var request = new CreateUserRequest("vasouv@email.com", "vasouv", "password");
         assertThrows(EntityExistsException.class, () -> userService.save(request));
     }
 
     @Test
     @DisplayName("Save new user - return new user")
     void saveNewUser() {
-        var request = new CreateUserRequest("email", "username", "password");
-        doReturn(new User(1, "email", "username", "password")).when(userRepository).save(any());
-        
+        var request = new CreateUserRequest("email@email.com", "username", "password");
+
         var savedUser = userService.save(request);
         assertThat(savedUser).isNotNull();
         assertThat(savedUser.getId()).isPositive();
+    }
+
+    private void initDatabase() {
+        var users = List.of(new User("vasouv@email.com", "vasouv", "password"),
+                new User("user@email.com", "user", "password"));
+        userRepository.saveAll(users);
     }
 }
