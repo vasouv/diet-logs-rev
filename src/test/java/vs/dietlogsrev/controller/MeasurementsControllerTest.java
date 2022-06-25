@@ -47,7 +47,7 @@ public class MeasurementsControllerTest {
 
     @Test
     @DisplayName("Create measurement")
-    public void createMeasurement() throws JsonProcessingException, Exception {
+    public void createMeasurement() throws Exception {
         var measurementRequest = new CreateMeasurementRequest(LocalDate.now(), new BigDecimal("88"));
 
         mvc.perform(post("/measurements/{userId}", 1)
@@ -58,7 +58,7 @@ public class MeasurementsControllerTest {
 
     @Test
     @DisplayName("Create measurement - date in future - throws exception")
-    public void createMeasurementDateInFuture() throws JsonProcessingException, Exception {
+    public void createMeasurementDateInFuture() throws Exception {
         var measurementRequest = new CreateMeasurementRequest(LocalDate.now().plusDays(1), new BigDecimal("88"));
 
         doThrow(new MeasurementDateInFutureException()).when(measurementService).add(1, measurementRequest);
@@ -75,7 +75,7 @@ public class MeasurementsControllerTest {
     @ParameterizedTest
     @ValueSource(strings = {"0.00", "-1.0"})
     @DisplayName("Create measurement - weight negative or zero - throws exception")
-    public void createMeasurementWeightIsNegativeOrZero(String value) throws JsonProcessingException, Exception {
+    public void createMeasurementWeightIsNegativeOrZero(String value) throws Exception {
         var weight = new BigDecimal(value);
 
         var measurementRequest = new CreateMeasurementRequest(LocalDate.now(), weight);
@@ -92,7 +92,7 @@ public class MeasurementsControllerTest {
 
     @Test
     @DisplayName("Find measurements by user id - return empty list")
-    public void findByUserIdEmptyCollection() throws JsonProcessingException, Exception {
+    public void findByUserIdEmptyCollection() throws Exception {
 
         when(measurementService.findByUserId(1)).thenReturn(Collections.emptyList());
 

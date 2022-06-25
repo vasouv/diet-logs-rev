@@ -43,7 +43,7 @@ public class AppointmentsControllerTest {
 
     @Test
     @DisplayName("Create appointment")
-    public void createAppointment() throws JsonProcessingException, Exception {
+    public void createAppointment() throws Exception {
 
         var appointmentRequest = new CreateAppointmentRequest(LocalDate.now().plusDays(1), 1);
 
@@ -56,7 +56,7 @@ public class AppointmentsControllerTest {
 
     @Test
     @DisplayName("Create appointment - date in past - throws exception")
-    public void createAppointmentDateInPastException() throws JsonProcessingException, Exception {
+    public void createAppointmentDateInPastException() throws Exception {
 
         var appointmentRequest = new CreateAppointmentRequest(LocalDate.now().minusDays(1), 1);
 
@@ -73,7 +73,7 @@ public class AppointmentsControllerTest {
 
     @Test
     @DisplayName("Create appointment - date is null - throws exception")
-    public void createAppointmentDateIsNull() throws JsonProcessingException, Exception {
+    public void createAppointmentDateIsNull() throws Exception {
         var appointmentRequest = new CreateAppointmentRequest(null, 1);
 
         doThrow(new AppointmentDateInFutureException()).when(appointmentService).add(1, appointmentRequest);
