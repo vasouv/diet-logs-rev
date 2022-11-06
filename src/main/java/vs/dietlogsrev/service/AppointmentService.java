@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import vs.dietlogsrev.entity.Appointment;
 import vs.dietlogsrev.exception.AppointmentDateInFutureException;
 import vs.dietlogsrev.exception.ErrorMessage;
+import vs.dietlogsrev.model.AppointmentResponse;
 import vs.dietlogsrev.model.CreateAppointmentRequest;
 import vs.dietlogsrev.repository.AppointmentRepository;
 
@@ -43,9 +44,9 @@ public class AppointmentService {
 
     }
 
-    public List<Appointment> findByUserId(int userId) {
+    public List<AppointmentResponse> findByUserId(int userId) {
         var user = userService.findById(userId);
-        return appointmentRepository.findAllByUser(user);
+        return appointmentRepository.findAllByUser(user).stream().map(Appointment::toAppointmentResponse).toList();
     }
 
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import vs.dietlogsrev.entity.Appointment;
+import vs.dietlogsrev.model.AppointmentResponse;
 import vs.dietlogsrev.model.CreateAppointmentRequest;
 import vs.dietlogsrev.service.AppointmentService;
 
@@ -35,7 +35,7 @@ public class AppointmentsController {
     }
 
     @GetMapping("{userId}")
-    public ResponseEntity<List<Appointment>> findByUserId(@PathVariable("userId") int userId) {
+    public ResponseEntity<List<AppointmentResponse>> findByUserId(@PathVariable("userId") int userId) {
         return ResponseEntity.ok(appointmentService.findByUserId(userId));
     }
 

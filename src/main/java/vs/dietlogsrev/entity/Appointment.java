@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import vs.dietlogsrev.model.AppointmentResponse;
 
 @Entity
 @Table(name = "appointments")
@@ -40,4 +41,8 @@ public class Appointment {
         this.dateOf = dateOf;
     }
     
+    public AppointmentResponse toAppointmentResponse() {
+        return new AppointmentResponse(dateOf);
+    }
+
 }

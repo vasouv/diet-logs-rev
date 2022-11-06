@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import vs.dietlogsrev.entity.Appointment;
 import vs.dietlogsrev.exception.AppointmentDateInFutureException;
 import vs.dietlogsrev.exception.UserNotFoundException;
+import vs.dietlogsrev.model.AppointmentResponse;
 import vs.dietlogsrev.model.CreateAppointmentRequest;
 import vs.dietlogsrev.service.AppointmentService;
 
@@ -129,7 +130,7 @@ public class AppointmentsControllerTest {
     @DisplayName("Find appointments by user id")
     public void findByUserId() throws Exception {
 
-        var appointments = List.of(new Appointment(LocalDate.now()));
+        var appointments = List.of(new AppointmentResponse(LocalDate.now()));
         
         when(appointmentService.findByUserId(1)).thenReturn(appointments);
         
