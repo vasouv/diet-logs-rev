@@ -65,6 +65,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), List.of(ErrorMessage.USER_NOT_FOUND));
     }
 
+    @ExceptionHandler(UserInfoNotFoundException.class)
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    public ErrorResponse handleUserInfoNotFoundException(UserInfoNotFoundException ex, WebRequest request) {
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), List.of(ErrorMessage.USER_INFO_NOT_FOUND));
+    }
+
     @ExceptionHandler(MeasurementDateInFutureException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMeasurementDateInFutureException(MeasurementDateInFutureException ex, WebRequest request) {
