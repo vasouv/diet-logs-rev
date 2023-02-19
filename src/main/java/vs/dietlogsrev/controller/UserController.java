@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-import lombok.RequiredArgsConstructor;
 import vs.dietlogsrev.entity.User;
 import vs.dietlogsrev.model.CreateUserInfoRequest;
 import vs.dietlogsrev.model.CreateUserRequest;
@@ -23,11 +22,15 @@ import vs.dietlogsrev.service.UserService;
 
 @RestController
 @RequestMapping("users")
-@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
     private final UserInfoService infoService;
+    
+    public UserController(UserService userService, UserInfoService userInfoService) {
+    	this.userService = userService;
+    	this.infoService = userInfoService;
+    }
     
     @PostMapping
     public ResponseEntity<User> create(HttpServletRequest httpRequest, @Valid @RequestBody CreateUserRequest request) {

@@ -6,7 +6,6 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
 import vs.dietlogsrev.entity.User;
 import vs.dietlogsrev.exception.ErrorMessage;
 import vs.dietlogsrev.exception.UserNotFoundException;
@@ -14,14 +13,17 @@ import vs.dietlogsrev.model.CreateUserRequest;
 import vs.dietlogsrev.repository.UserRepository;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
 
-    public User save(@Valid CreateUserRequest createUserRequest) {
+    public UserService(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+
+	public User save(@Valid CreateUserRequest createUserRequest) {
         
         if (userRepository.existsByEmail(createUserRequest.email())) {
             log.warn("User with email: {} already exists", createUserRequest.email());

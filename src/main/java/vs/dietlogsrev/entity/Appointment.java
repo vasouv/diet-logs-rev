@@ -11,37 +11,55 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import vs.dietlogsrev.model.AppointmentResponse;
 
 @Entity
 @Table(name = "appointments")
-@Getter
-@ToString
-@NoArgsConstructor
 public class Appointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Setter
     @Column(name = "dateOf")
     @NotNull
     private LocalDate dateOf;
 
-    @Setter
     @ManyToOne
     private User user;
+    
+    public Appointment() {}
 
     public Appointment(LocalDate dateOf) {
         this.dateOf = dateOf;
     }
     
-    public AppointmentResponse toAppointmentResponse() {
+    public LocalDate getDateOf() {
+		return dateOf;
+	}
+
+	public void setDateOf(LocalDate dateOf) {
+		this.dateOf = dateOf;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	@Override
+	public String toString() {
+		return "Appointment [id=" + id + ", dateOf=" + dateOf + ", user=" + user + "]";
+	}
+
+	public AppointmentResponse toAppointmentResponse() {
         return new AppointmentResponse(dateOf);
     }
 

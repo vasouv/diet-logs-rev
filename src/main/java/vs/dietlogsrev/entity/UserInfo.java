@@ -10,16 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import vs.dietlogsrev.model.CreateUserInfoRequest;
 import vs.dietlogsrev.model.Gender;
 
-@Getter
-@ToString
-@NoArgsConstructor
 @Entity
 @Table(name = "user_info")
 public class UserInfo {
@@ -28,41 +21,37 @@ public class UserInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     
-    @Setter
     @Column(name = "name", nullable = false)
     @NotNull
     private String name;
     
-    @Setter
     @Column(name = "surname", nullable = false)
     @NotNull
     private String surname;
     
-    @Setter
     @Column(name = "gender", nullable = false)
     @NotNull
     private Gender gender;
     
-    @Setter
     @Column(name = "date_of_birth", nullable = false)
     @NotNull
     private LocalDate dateOfBirth;
     
-    @Setter
     @Column(name = "height", nullable = false)
     @NotNull
     private BigDecimal height;
     
-    @Setter
     @Column(name = "weight", nullable = false)
     @NotNull
     private BigDecimal weight;
     
-    @Setter
     @OneToOne
     private User user;
     
-    public UserInfo(CreateUserInfoRequest request) {
+    public UserInfo() {
+	}
+
+	public UserInfo(CreateUserInfoRequest request) {
         this.name = request.name();
         this.surname = request.surname();
         this.gender = request.gender();
@@ -81,5 +70,71 @@ public class UserInfo {
         this.height = height;
         this.weight = weight;
     }
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public LocalDate getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(LocalDate dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public BigDecimal getHeight() {
+		return height;
+	}
+
+	public void setHeight(BigDecimal height) {
+		this.height = height;
+	}
+
+	public BigDecimal getWeight() {
+		return weight;
+	}
+
+	public void setWeight(BigDecimal weight) {
+		this.weight = weight;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	@Override
+	public String toString() {
+		return "UserInfo [id=" + id + ", name=" + name + ", surname=" + surname + ", gender=" + gender
+				+ ", dateOfBirth=" + dateOfBirth + ", height=" + height + ", weight=" + weight + "]";
+	}
 
 }

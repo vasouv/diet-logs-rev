@@ -2,6 +2,7 @@ package vs.dietlogsrev.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,16 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+
 import vs.dietlogsrev.model.CreateMeasurementRequest;
 import vs.dietlogsrev.model.MeasurementResponse;
 
-@ToString
-@NoArgsConstructor
-@Getter
 @Entity
 @Table(name = "measurements")
 public class Measurement {
@@ -28,32 +23,71 @@ public class Measurement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Setter
     @Column(name = "dateOf", nullable = false)
     @NotNull
     private LocalDate dateOf;
 
-    @Setter
     @Column(name = "weight", nullable = false)
     @NotNull
     private BigDecimal weight;
 
-    @Setter
     @Column(name = "bmi", nullable = false)
     @NotNull
     private BigDecimal bmi;
 
-    @Setter
     @ManyToOne
     private User user;
+    
+    public Measurement() {}
 
-    public Measurement(CreateMeasurementRequest request, BigDecimal bmi) {
+	public Measurement(CreateMeasurementRequest request, BigDecimal bmi) {
         this.dateOf = request.date();
         this.weight = request.weight();
         this.bmi = bmi;
     }
     
-    public MeasurementResponse toMeasurementResponse() {
+    public LocalDate getDateOf() {
+		return dateOf;
+	}
+
+	public void setDateOf(LocalDate dateOf) {
+		this.dateOf = dateOf;
+	}
+
+	public BigDecimal getWeight() {
+		return weight;
+	}
+
+	public void setWeight(BigDecimal weight) {
+		this.weight = weight;
+	}
+
+	public BigDecimal getBmi() {
+		return bmi;
+	}
+
+	public void setBmi(BigDecimal bmi) {
+		this.bmi = bmi;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	@Override
+	public String toString() {
+		return "Measurement [id=" + id + ", dateOf=" + dateOf + ", weight=" + weight + ", bmi=" + bmi + "]";
+	}
+
+	public MeasurementResponse toMeasurementResponse() {
         return new MeasurementResponse(dateOf, weight, bmi);
     }
 

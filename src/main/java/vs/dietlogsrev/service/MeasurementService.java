@@ -7,7 +7,6 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
 import vs.dietlogsrev.entity.Measurement;
 import vs.dietlogsrev.exception.ErrorMessage;
 import vs.dietlogsrev.exception.MeasurementDateInFutureException;
@@ -17,7 +16,6 @@ import vs.dietlogsrev.model.MeasurementResponse;
 import vs.dietlogsrev.repository.MeasurementRepository;
 
 @Service
-@RequiredArgsConstructor
 public class MeasurementService {
 
     private static final Logger log = LoggerFactory.getLogger(MeasurementService.class);
@@ -27,7 +25,15 @@ public class MeasurementService {
     private final BMICalculator bmiCalculator;
     private final UserInfoService infoService;
     
-    public void add(int userId, @Valid CreateMeasurementRequest request) {
+    public MeasurementService(MeasurementRepository measurementRepository, UserService userService,
+			BMICalculator bmiCalculator, UserInfoService infoService) {
+		this.measurementRepository = measurementRepository;
+		this.userService = userService;
+		this.bmiCalculator = bmiCalculator;
+		this.infoService = infoService;
+	}
+
+	public void add(int userId, @Valid CreateMeasurementRequest request) {
 
         // measurement date must be past or present
         if (request.date().isAfter(LocalDate.now())) {
