@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import vs.dietlogsrev.model.CreateMeasurementRequest;
-import vs.dietlogsrev.model.MeasurementResponse;
 
 @Entity
 @Table(name = "measurements")
@@ -86,9 +85,5 @@ public class Measurement {
 	public String toString() {
 		return "Measurement [id=" + id + ", dateOf=" + dateOf + ", weight=" + weight + ", bmi=" + bmi + "]";
 	}
-
-	public MeasurementResponse toMeasurementResponse() {
-        return new MeasurementResponse(dateOf, weight, bmi);
-    }
 
 }

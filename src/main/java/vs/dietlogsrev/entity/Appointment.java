@@ -11,8 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import vs.dietlogsrev.model.AppointmentResponse;
-
 @Entity
 @Table(name = "appointments")
 public class Appointment {
@@ -58,9 +56,5 @@ public class Appointment {
 	public String toString() {
 		return "Appointment [id=" + id + ", dateOf=" + dateOf + ", user=" + user + "]";
 	}
-
-	public AppointmentResponse toAppointmentResponse() {
-        return new AppointmentResponse(dateOf);
-    }
 
 }
