@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.validation.Valid;
+
+import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import vs.dietlogsrev.entity.Measurement;
 import vs.dietlogsrev.exception.ErrorMessage;
 import vs.dietlogsrev.exception.MeasurementDateInFutureException;
 import vs.dietlogsrev.exception.MeasurementWeightNegativeOrZero;
+import vs.dietlogsrev.mappers.MeasurementMapper;
 import vs.dietlogsrev.model.CreateMeasurementRequest;
 import vs.dietlogsrev.model.MeasurementResponse;
 import vs.dietlogsrev.repository.MeasurementRepository;
@@ -19,6 +22,7 @@ import vs.dietlogsrev.repository.MeasurementRepository;
 public class MeasurementService {
 
     private static final Logger log = LoggerFactory.getLogger(MeasurementService.class);
+    private MeasurementMapper measurementMapper = Mappers.getMapper(MeasurementMapper.class);
     
     private final MeasurementRepository measurementRepository;
     private final UserService userService;
@@ -62,7 +66,7 @@ public class MeasurementService {
 
     public List<MeasurementResponse> findByUserId(int userId) {
         var user = userService.findById(userId);
-        return measurementRepository.findAllByUser(user).stream().map(Measurement::toMeasurementResponse).toList();
+        return measurementRepository.findAllByUser(user).stream().map(measurementMapper::toMeasurementResponse).toList();
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import vs.dietlogsrev.entity.Appointment;
 import vs.dietlogsrev.exception.AppointmentDateInFutureException;
 import vs.dietlogsrev.exception.ErrorMessage;
+import vs.dietlogsrev.mappers.AppointmentMapper;
 import vs.dietlogsrev.model.AppointmentResponse;
 import vs.dietlogsrev.model.CreateAppointmentRequest;
 import vs.dietlogsrev.repository.AppointmentRepository;
@@ -20,6 +22,7 @@ import vs.dietlogsrev.repository.AppointmentRepository;
 public class AppointmentService {
 
     private static final Logger log = LoggerFactory.getLogger(AppointmentService.class);
+    private final AppointmentMapper appointmentMapper = Mappers.getMapper(AppointmentMapper.class);
 
     final AppointmentRepository appointmentRepository;
     final UserService userService;
@@ -49,7 +52,7 @@ public class AppointmentService {
 
     public List<AppointmentResponse> findByUserId(int userId) {
         var user = userService.findById(userId);
-        return appointmentRepository.findAllByUser(user).stream().map(Appointment::toAppointmentResponse).toList();
+        return appointmentRepository.findAllByUser(user).stream().map(appointmentMapper::toAppointmentResponse).toList();
     }
 
 }

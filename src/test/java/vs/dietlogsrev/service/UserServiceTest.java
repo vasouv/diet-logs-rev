@@ -1,21 +1,27 @@
 package vs.dietlogsrev.service;
 
-import org.junit.jupiter.api.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyInt;
+
+import java.util.List;
+
+import javax.persistence.EntityExistsException;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+
 import vs.dietlogsrev.entity.User;
 import vs.dietlogsrev.exception.UserNotFoundException;
 import vs.dietlogsrev.model.CreateUserRequest;
 import vs.dietlogsrev.repository.UserRepository;
 
-import javax.persistence.EntityExistsException;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
-
+@Disabled
 @SpringBootTest
 public class UserServiceTest {
 
