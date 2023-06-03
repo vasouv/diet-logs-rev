@@ -1,19 +1,6 @@
 package vs.dietlogsrev.controller;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +9,25 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import vs.dietlogsrev.entity.Appointment;
 import vs.dietlogsrev.exception.AppointmentDateInFutureException;
 import vs.dietlogsrev.exception.UserNotFoundException;
 import vs.dietlogsrev.model.AppointmentResponse;
 import vs.dietlogsrev.model.CreateAppointmentRequest;
 import vs.dietlogsrev.service.AppointmentService;
 
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @WebMvcTest(controllers = AppointmentsController.class)
-public class AppointmentsControllerTest {
+class AppointmentsControllerTest {
 
     @Autowired 
     MockMvc mvc;
@@ -44,7 +40,7 @@ public class AppointmentsControllerTest {
 
     @Test
     @DisplayName("Create appointment")
-    public void createAppointment() throws Exception {
+    void createAppointment() throws Exception {
 
         var appointmentRequest = new CreateAppointmentRequest(LocalDate.now().plusDays(1), 1);
 
@@ -57,7 +53,7 @@ public class AppointmentsControllerTest {
 
     @Test
     @DisplayName("Create appointment - date in past - throws exception")
-    public void createAppointmentDateInPastException() throws Exception {
+    void createAppointmentDateInPastException() throws Exception {
 
         var appointmentRequest = new CreateAppointmentRequest(LocalDate.now().minusDays(1), 1);
 
@@ -74,7 +70,7 @@ public class AppointmentsControllerTest {
 
     @Test
     @DisplayName("Create appointment - date is null - throws exception")
-    public void createAppointmentDateIsNull() throws Exception {
+    void createAppointmentDateIsNull() throws Exception {
         var appointmentRequest = new CreateAppointmentRequest(null, 1);
 
         doThrow(new AppointmentDateInFutureException()).when(appointmentService).add(1, appointmentRequest);
@@ -89,7 +85,7 @@ public class AppointmentsControllerTest {
 
     @Test
     @DisplayName("Create appointment - user not found")
-    public void createAppointmentUserNotFound() throws Exception {
+    void createAppointmentUserNotFound() throws Exception {
         CreateAppointmentRequest appointmentRequest = new CreateAppointmentRequest(LocalDate.now(), 1);
 
         doThrow(new UserNotFoundException()).when(appointmentService).add(1, appointmentRequest);
@@ -104,7 +100,7 @@ public class AppointmentsControllerTest {
 
     @Test
     @DisplayName("Find appointments by user id - user not found")
-    public void findByUserIdUserNotFound() throws Exception {
+    void findByUserIdUserNotFound() throws Exception {
         doThrow(new UserNotFoundException()).when(appointmentService).findByUserId(1);
         
         mvc.perform(get("/appointments/{userId}", 1)
@@ -116,7 +112,7 @@ public class AppointmentsControllerTest {
 
     @Test
     @DisplayName("Find appointments by user id - empty list")
-    public void findByUserIdEmptyCollection() throws Exception {
+    void findByUserIdEmptyCollection() throws Exception {
         
         when(appointmentService.findByUserId(1)).thenReturn(Collections.emptyList());
         
@@ -128,7 +124,7 @@ public class AppointmentsControllerTest {
 
     @Test
     @DisplayName("Find appointments by user id")
-    public void findByUserId() throws Exception {
+    void findByUserId() throws Exception {
 
         var appointments = List.of(new AppointmentResponse(LocalDate.now()));
         

@@ -10,12 +10,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(controllers = HomeController.class)
-public class HomeControllerTest {
+class HomeControllerTest {
 
   @Autowired MockMvc mvc;
 
   @Test
-  public void home() throws Exception {
+  void home() throws Exception {
     mvc.perform(get("/")).andExpect(status().isOk()).andExpect(content().string("Diet Logs Revisited"));
   }
 }

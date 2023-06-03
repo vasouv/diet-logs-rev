@@ -2,15 +2,15 @@ package vs.dietlogsrev.exception;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import javax.persistence.EntityExistsException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
+import jakarta.persistence.EntityExistsException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,16 +22,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-     // for the @Valid annotation in request body
-     @Override
-     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-
-         // Get all errors
-         var errorList = ex.getBindingResult().getFieldErrors().stream().map(x -> x.getDefaultMessage()).collect(Collectors.toList());
-
-         return ResponseEntity.status(status).body(new ErrorResponse(status.value(), errorList));
-
-     }
+    // for the @Valid annotation in request body
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        // Get all errors
+        var errorList = ex.getBindingResult().getFieldErrors().stream().map(x -> x.getDefaultMessage()).toList();
+        return ResponseEntity.status(status).body(new ErrorResponse(status.value(), errorList));
+    }
 
     // for the @Validated annotation in path parameters
     @ExceptionHandler(ConstraintViolationException.class)

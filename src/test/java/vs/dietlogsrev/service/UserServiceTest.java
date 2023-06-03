@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 
 import java.util.List;
 
-import javax.persistence.EntityExistsException;
+import jakarta.persistence.EntityExistsException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ import vs.dietlogsrev.repository.UserRepository;
 
 @Disabled
 @SpringBootTest
-public class UserServiceTest {
+class UserServiceTest {
 
     @Autowired
     UserRepository userRepository;

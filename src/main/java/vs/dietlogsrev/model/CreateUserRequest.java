@@ -1,8 +1,8 @@
 package vs.dietlogsrev.model;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public record CreateUserRequest(
         @NotBlank(message = "Email is required") @Email(message = "Provide an email address") String email, 

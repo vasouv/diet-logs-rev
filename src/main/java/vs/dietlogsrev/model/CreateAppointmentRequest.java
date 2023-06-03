@@ -2,7 +2,7 @@ package vs.dietlogsrev.model;
 
 import java.time.LocalDate;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public record CreateAppointmentRequest(
     @NotNull(message = "Date is required") LocalDate date,
