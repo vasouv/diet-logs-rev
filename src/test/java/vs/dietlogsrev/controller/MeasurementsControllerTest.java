@@ -1,20 +1,6 @@
 package vs.dietlogsrev.controller;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,7 +11,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
 import vs.dietlogsrev.exception.MeasurementDateInFutureException;
 import vs.dietlogsrev.exception.MeasurementWeightNegativeOrZero;
 import vs.dietlogsrev.exception.UserNotFoundException;
@@ -33,8 +18,20 @@ import vs.dietlogsrev.model.CreateMeasurementRequest;
 import vs.dietlogsrev.model.MeasurementResponse;
 import vs.dietlogsrev.service.MeasurementService;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @WebMvcTest(controllers = MeasurementsController.class)
-public class MeasurementsControllerTest {
+class MeasurementsControllerTest {
 
     @Autowired
     MockMvc mvc;
@@ -47,7 +44,7 @@ public class MeasurementsControllerTest {
 
     @Test
     @DisplayName("Create measurement")
-    public void createMeasurement() throws Exception {
+    void createMeasurement() throws Exception {
         var measurementRequest = new CreateMeasurementRequest(LocalDate.now(), new BigDecimal("88"));
 
         mvc.perform(post("/measurements/{userId}", 1)
@@ -58,7 +55,7 @@ public class MeasurementsControllerTest {
 
     @Test
     @DisplayName("Create measurement - date in future - throws exception")
-    public void createMeasurementDateInFuture() throws Exception {
+    void createMeasurementDateInFuture() throws Exception {
         var measurementRequest = new CreateMeasurementRequest(LocalDate.now().plusDays(1), new BigDecimal("88"));
 
         doThrow(new MeasurementDateInFutureException()).when(measurementService).add(1, measurementRequest);
@@ -75,7 +72,7 @@ public class MeasurementsControllerTest {
     @ParameterizedTest
     @ValueSource(strings = {"0.00", "-1.0"})
     @DisplayName("Create measurement - weight negative or zero - throws exception")
-    public void createMeasurementWeightIsNegativeOrZero(String value) throws Exception {
+    void createMeasurementWeightIsNegativeOrZero(String value) throws Exception {
         var weight = new BigDecimal(value);
 
         var measurementRequest = new CreateMeasurementRequest(LocalDate.now(), weight);
@@ -92,7 +89,7 @@ public class MeasurementsControllerTest {
 
     @Test
     @DisplayName("Find measurements by user id - return empty list")
-    public void findByUserIdEmptyCollection() throws Exception {
+    void findByUserIdEmptyCollection() throws Exception {
 
         when(measurementService.findByUserId(1)).thenReturn(Collections.emptyList());
 
@@ -104,7 +101,7 @@ public class MeasurementsControllerTest {
 
     @Test
     @DisplayName("Find measurements by user id - returns list")
-    public void findByUserId() throws Exception {
+    void findByUserId() throws Exception {
         var measurements = List.of(new MeasurementResponse(LocalDate.now(), new BigDecimal("88.0"), new BigDecimal("12.3")));
 
         when(measurementService.findByUserId(1)).thenReturn(measurements);
@@ -117,7 +114,7 @@ public class MeasurementsControllerTest {
 
     @Test
     @DisplayName("Find measurements by user id - user not found")
-    public void findByUserIdUserNotFound() throws Exception {
+    void findByUserIdUserNotFound() throws Exception {
 
         doThrow(new UserNotFoundException()).when(measurementService).findByUserId(1);
 

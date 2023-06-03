@@ -3,7 +3,7 @@ package vs.dietlogsrev.service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;

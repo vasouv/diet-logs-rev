@@ -24,7 +24,7 @@ import vs.dietlogsrev.service.UserInfoService;
 import vs.dietlogsrev.service.UserService;
 
 @WebMvcTest(controllers = UserController.class)
-public class UserControllerTest {
+class UserControllerTest {
 
   @Autowired MockMvc mvc;
 
@@ -34,7 +34,7 @@ public class UserControllerTest {
 
   @Test
   @DisplayName("Find all - returns empty list")
-  public void findAllReturnsEmptyList() throws Exception {
+  void findAllReturnsEmptyList() throws Exception {
     when(userService.findAll()).thenReturn(Collections.emptyList());
 
     mvc.perform(get("/users").contentType(MediaType.APPLICATION_JSON))
@@ -44,7 +44,7 @@ public class UserControllerTest {
 
   @Test
   @DisplayName("Find all - returns list of users")
-  public void findAllReturnsListOfUsers() throws Exception {
+  void findAllReturnsListOfUsers() throws Exception {
     var users =
         List.of(
             new User("email", "username", "password"),
@@ -59,7 +59,7 @@ public class UserControllerTest {
 
   @Test
   @DisplayName("Find user by id - returns user")
-  public void findUserByIdReturnsUser() throws Exception {
+  void findUserByIdReturnsUser() throws Exception {
     var user = new User(1, "email", "username", "password");
     when(userService.findById(anyInt())).thenReturn(user);
 
@@ -72,7 +72,7 @@ public class UserControllerTest {
 
   @Test
   @DisplayName("Find user by id - throws Not Found Exception")
-  public void findUserByIdThrowsNotFoundException() throws Exception {
+  void findUserByIdThrowsNotFoundException() throws Exception {
     when(userService.findById(anyInt())).thenThrow(new UserNotFoundException());
 
     mvc.perform(get("/users/{id}", 1).contentType(MediaType.APPLICATION_JSON))

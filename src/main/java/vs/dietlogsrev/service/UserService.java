@@ -1,8 +1,8 @@
 package vs.dietlogsrev.service;
 
 import java.util.List;
-import javax.persistence.EntityExistsException;
-import javax.validation.Valid;
+import jakarta.persistence.EntityExistsException;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

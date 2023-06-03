@@ -25,7 +25,7 @@ import vs.dietlogsrev.model.Gender;
 import vs.dietlogsrev.repository.UserInfoRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class UserInfoServiceTest {
+class UserInfoServiceTest {
 
     @Mock
     UserService userService;
