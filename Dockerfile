@@ -1,5 +1,5 @@
 # base build image
-FROM maven:3.8.4-eclipse-temurin-17 as maven
+FROM maven:3.9.2-eclipse-temurin-20 as maven
 
 # copy the pom.xml
 COPY ./pom.xml ./pom.xml
@@ -11,7 +11,7 @@ COPY ./src ./src
 RUN mvn package -DskipTests=true
 
 # final base image
-FROM eclipse-temurin:17.0.1_12-jdk
+FROM eclipse-temurin:20.0.1_9-jdk
 
 # copy the built artifact from the maven image
 COPY --from=maven target/diet-logs-rev.jar diet-logs-rev.jar
